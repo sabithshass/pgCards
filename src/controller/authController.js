@@ -50,7 +50,7 @@ module.exports.register = async (req) => {
     image: image || null,
   });
 
-  const token = generateToken(user);
+  // const token = generateToken(user);
     const user = await User.findOne(
     { email },
     {
@@ -61,7 +61,7 @@ module.exports.register = async (req) => {
       createdAt: 1,
     }
   );
-
+  const token = generateToken(user);
   return {
     error: false,
     data: { user, token },
