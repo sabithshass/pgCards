@@ -24,16 +24,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  avatar: {
-    type: String,
-    default: null
-  },
   phone: {
     type: String,
     trim: true,
   },
   image: {
     type: String,
+    default: null
+  },
+  resetPasswordToken: {
+    type: String,
+    default: null
+  },
+  resetPasswordExpires: {
+    type: Date,
     default: null
   }
 }, {
