@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controller/authController');
+const googleAuthcontroller= require('../controller/googleAuthcontroller');
 const reqHandling = require('../utils/reqHandling');
 
 router.post('/register', async (req, res) => {
@@ -34,7 +35,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/googleAuth', async (req, res) => {
   try {
-    const result = await authController.googleSignIn(req);
+    const result = await googleAuthcontroller.googleSignIn(req);
 
     if (result.error) {
       return reqHandling.handleError({
