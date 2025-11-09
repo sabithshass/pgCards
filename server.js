@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/dbConnection'); 
 const authRoutes = require('./src/routes/authRoutes');
+const uploadRoutes = require("./src/routes/uploadRoutes");
 
 const app = express();
 
@@ -15,8 +16,11 @@ app.use(express.json());
 
 connectDB();
 
+app.use("/uploads", express.static("uploads"));
+
 
 app.use('/user', authRoutes);
+app.use("/upload", uploadRoutes);
 
 app.get('/', (req, res) => {
   res.send('Server is running!');
