@@ -5,63 +5,67 @@ const cardProductSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     description: {
       type: String,
-      trim: true
+      trim: true,
     },
     category: {
       type: String,
       enum: ["PVC", "Metal", "Wooden", "Digital", "Accessories"],
-      required: true
+      required: true,
     },
-    price: {
+    basePrice: {
       type: Number,
-      required: true
+      required: true,
     },
     currency: {
       type: String,
-      default: "INR"
-    },
-    frontImage: {
-      type: String,
-      required: true
-    },
-    backImage: {
-      type: String,
-      required: true
+      default: "INR",
     },
     material: {
-      type: String 
-    },
-    finish: {
-      type: String 
+      type: String,
+      trim: true,
     },
     features: [
       {
-        type: String 
-      }
+        type: String,
+        trim: true,
+      },
     ],
-    sku: {
-      type: String,
-      unique: true
-    },
-    inStock: {
-      type: Boolean,
-      default: true
-    },
+
     variants: [
       {
-        color: String,
-        finish: String,
-        price: Number
-      }
-    ]
+        color: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        frontImage: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        backImage: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        price: {
+          type: Number,
+          required: true,
+        },
+        finish: {
+          type: String,
+          trim: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
-    versionKey: false 
+    versionKey: false,
   }
 );
 
