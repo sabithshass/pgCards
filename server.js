@@ -8,6 +8,8 @@ const connectDB = require('./config/dbConnection');
 const authRoutes = require('./src/routes/authRoutes');
 const uploadRoutes = require("./src/routes/uploadRoutes");
 const cardRoutes = require("./src/routes/cardRoutes");
+const userProfileRoutes = require("./src/routes/userProfileRoutes");
+const cartRoutes =require("./src/routes/cartRoutes")
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use("/uploads", express.static("uploads"));
 app.use('/user', authRoutes);
 app.use("/upload", uploadRoutes);
 app.use("/card", cardRoutes);
+app.use("/userProfile",userProfileRoutes)
+app.use("/cart",cartRoutes)
 
 app.get('/', (req, res) => {
   res.send('Server is running!');

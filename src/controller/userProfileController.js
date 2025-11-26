@@ -1,56 +1,88 @@
-const UserProfile = require('../models/UserProfile'); // your schema
-const User = require('../models/User');
+const UserProfile = require("../modals/userProfile");
 
 module.exports.saveUserProfile = async (req, res) => {
+  const {
+    fullName,
+    userId,
+    companyDesignation,
+    companyName,
+    about,
+    phoneNumbers,
+    emails,
+    contactDetails,
+    socialMedia,
+    backgroundImage,
+    profilePicture,
+    coverLogo,
+  } = req.body;
 
-    const {
-      fullName,
-      userId,
-      companyDesignation,
-      companyName,
-      about,
-      phoneNumbers,
-      emails,
-      contactDetails
-    } = req.body;
+  const profileData = {
+    user: userId,
+    fullName,
+    companyDesignation,
+    companyName,
+    about,
+    phoneNumbers,
+    emails,
+    contactDetails,
+    socialMedia,
+    backgroundImage,
+    profilePicture,
+    coverLogo,
+  };
 
-    // const userExists = await User.findById(userId);
-    // if (!userExists) {
-    //   return res.status(404).json({ success: false, message: "User not found" });
-    // }
+  let profile = await UserProfile.findOne({ user: userId });
 
+  if (profile) {
+    profile = await UserProfile.findOneAndUpdate(
+      { user: userId },
+      { $set: profileData },
+      { new: true }
+    );
 
-    const profileData = {
-      userId,
-      fullName,
-      companyDesignation,
-      companyName,
-      about,
-      phoneNumbers,
-      emails,
-      contactDetails
+    return {
+      data: true,
+      msg: "Profile updated successfully",
+      code: 200,
+      status: "SUCCESS",
     };
+  } else {
+    profile = await UserProfile.create(profileData);
+    return {
+      data: true,
+      msg: "Profile created successfully",
+      code: 200,
+      status: "SUCCESS",
+    };
+  }
+};
 
-    let profile = await UserProfile.findOne({ user: userId });
 
-    if (profile) {
-      profile = await UserProfile.findOneAndUpdate(
-        { user: userId },
-        { $set: profileData },
-        { new: true }
-      );
-      return res.status(200).json({
-        success: true,
-        message: "Profile updated successfully",
-        data: profile
-      });
-    } else {
-      profile = await UserProfile.create(profileData);
-      return res.status(201).json({
-        success: true,
-        message: "Profile created successfully",
-        data: profile
-      });
+module.exports.getUserProfileById = async (req) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return {
+        data: false,
+        msg: "User ID is required",
+        code: 400,
+      };
     }
-  
+
+    const user = await UserProfile.findById(userId);
+
+    if (!user) {
+      return {
+        data: false,
+        msg: "User not found",
+        code: 404,
+      };
+    }
+
+    return {
+      msg: "User profile fetched successfully",
+      code: 200,
+      status: true,
+      data: user,
+    };
 };
