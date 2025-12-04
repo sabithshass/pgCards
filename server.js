@@ -10,6 +10,7 @@ const uploadRoutes = require("./src/routes/uploadRoutes");
 const cardRoutes = require("./src/routes/cardRoutes");
 const userProfileRoutes = require("./src/routes/userProfileRoutes");
 const cartRoutes =require("./src/routes/cartRoutes")
+const paymentRoutes=require("./src/routes/paymentRoutes")
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/upload", uploadRoutes);
 app.use("/card", cardRoutes);
 app.use("/userProfile",userProfileRoutes)
 app.use("/cart",cartRoutes)
+app.use("/payment",paymentRoutes)
 
 app.get('/', (req, res) => {
   res.send('Server is running!');
