@@ -108,6 +108,8 @@ module.exports.createPaymentIntent = async (req) => {
 
 
 module.exports.webhookIntent = async (req) => {
+  console.log("STRIPE KEY:", process.env.STRIPE_SECRET_KEY);
+
   const sig = req.headers["stripe-signature"];
 
   const event = stripe.webhooks.constructEvent(
