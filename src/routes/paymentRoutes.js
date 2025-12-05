@@ -31,9 +31,9 @@ router.post("/createPayment", async (req, res) => {
   }
 });
 
-router.post("/webhook", async (req, res) => {
+router.post("/confirmPayment", async (req, res) => {
   try {
-    const result = await paymentGatewayController.webhookIntent(req);
+    const result = await paymentGatewayController.confirmPayment(req);
 
     if (result.error) {
       return reqHandling.handleError({
