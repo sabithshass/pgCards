@@ -103,7 +103,7 @@ module.exports.generateUserQR = async (req, res) => {
     };
   }
 
-  const redirectUrl = `https://pg-cards-seven.vercel.app//user_profile/${userProfile._id}`;
+  const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}`;
 
   const qrImage = await QRCode.toDataURL(redirectUrl);
 
