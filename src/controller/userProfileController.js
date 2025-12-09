@@ -92,7 +92,7 @@ module.exports.generateUserQR = async (req, res) => {
 
   const userProfile = await UserProfile.findOne({ user: userId });
   if (!userProfile) {
-    return { msg: "User not found" };
+    return { msg: "User not found",code:404 };
   }
 
   if (userProfile.qrCode) {
