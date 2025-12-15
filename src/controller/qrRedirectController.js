@@ -1,5 +1,27 @@
-module.exports.appDownloadRedirect = async (req, res) => {
+// module.exports.appDownloadRedirect = async (req, res) => {
 
+//     const userAgent = req.headers["user-agent"]?.toLowerCase() || "";
+
+//     const IOS_APP_STORE_URL =
+//       "https://apps.apple.com/in/app/pixel-x-racer/id6468572363";
+
+//     const ANDROID_PLAY_STORE_URL =
+//       "https://play.google.com/store/apps/details?id=com.pixel.pixelxracer.pixelracer";
+
+//     if (userAgent.includes("iphone") || userAgent.includes("ipad") || userAgent.includes("ios")) {
+//       return {data:IOS_APP_STORE_URL};
+//     }
+
+//     if (userAgent.includes("android")) {
+//       return{ data:ANDROID_PLAY_STORE_URL};
+//     }
+
+
+//     return {data:"https://archfiendstudio.com/"};
+ 
+// };
+module.exports.appDownloadRedirect = async (req, res) => {
+  try {
     const userAgent = req.headers["user-agent"]?.toLowerCase() || "";
 
     const IOS_APP_STORE_URL =
@@ -8,15 +30,21 @@ module.exports.appDownloadRedirect = async (req, res) => {
     const ANDROID_PLAY_STORE_URL =
       "https://play.google.com/store/apps/details?id=com.pixel.pixelxracer.pixelracer";
 
-    if (userAgent.includes("iphone") || userAgent.includes("ipad") || userAgent.includes("ios")) {
-      return res.redirect(IOS_APP_STORE_URL);
+    if (
+      userAgent.includes("iphone") ||
+      userAgent.includes("ipad") ||
+      userAgent.includes("ios")
+    ) {
+      return res.redirect(302, IOS_APP_STORE_URL);
     }
 
     if (userAgent.includes("android")) {
-      return res.redirect(ANDROID_PLAY_STORE_URL);
+      return res.redirect(302, ANDROID_PLAY_STORE_URL);
     }
 
-
-    return res.redirect("https://archfiendstudio.com/");
- 
+    // fallback (desktop / unknown)
+    return res.redirect(302, "https://archfiendstudio.com/");
+  } catch (err) {
+    return res.redirect(302, "https://archfiendstudio.com/");
+  }
 };

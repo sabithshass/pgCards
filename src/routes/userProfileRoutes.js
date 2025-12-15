@@ -88,32 +88,35 @@ router.post("/getUser", async (req, res) => {
   }
 });
 
-router.get("/redirectArchified", async (req, res) => {
-  try {
-    const result = await qrRedirectController.appDownloadRedirect(req);
+// router.get("/redirectArchified", async (req, res) => {
+//   try {
+//     const result = await qrRedirectController.appDownloadRedirect(req);
 
-    if (result.error) {
-      return reqHandling.handleError({
-        res,
-        reason: result.msg,
-        code: result.code,
-      });
-    }
+//     if (result.error) {
+//       return reqHandling.handleError({
+//         res,
+//         reason: result.msg,
+//         code: result.code,
+//       });
+//     }
 
-    return reqHandling.handleResponse({
-      res,
-      data: result.data,
-      msg: result.msg,
-      code: result.code,
-      status: result.status,
-    });
-  } catch (err) {
-    return reqHandling.handleError({
-      res,
-      reason: err.message || "Server error",
-      code: 500,
-    });
-  }
-});
+//     return reqHandling.handleResponse({
+//       res,
+//       data: result.data,
+//       msg: result.msg,
+//       code: result.code,
+//       status: result.status,
+//     });
+//   } catch (err) {
+//     return reqHandling.handleError({
+//       res,
+//       reason: err.message || "Server error",
+//       code: 500,
+//     });
+//   }
+// });
+
+router.get("/redirectArchified", qrRedirectController.appDownloadRedirect);
+
 
 module.exports = router;
