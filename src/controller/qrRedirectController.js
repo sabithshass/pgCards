@@ -21,14 +21,14 @@
  
 // };
 module.exports.appDownloadRedirect = async (req, res) => {
-  try {
+
     const userAgent = req.headers["user-agent"]?.toLowerCase() || "";
 
     const IOS_APP_STORE_URL =
-      "https://apps.apple.com/in/app/pixel-x-racer/id6468572363";
+      "https://apps.apple.com/in/app/metashot/id6449360506";
 
     const ANDROID_PLAY_STORE_URL =
-      "https://play.google.com/store/apps/details?id=com.pixel.pixelxracer.pixelracer";
+      "https://play.google.com/store/apps/details?id=com.metashot.metacricket";
 
     if (
       userAgent.includes("iphone") ||
@@ -43,8 +43,6 @@ module.exports.appDownloadRedirect = async (req, res) => {
     }
 
     // fallback (desktop / unknown)
-    return res.redirect(302, "https://archfiendstudio.com/");
-  } catch (err) {
-    return res.redirect(302, "https://archfiendstudio.com/");
-  }
+    return res.redirect(302, "https://metashot.in");
+  
 };
