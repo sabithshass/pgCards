@@ -88,7 +88,7 @@ router.post("/getUser", async (req, res) => {
   }
 });
 
-router.post("/redirectArchified", async (req, res) => {
+router.get("/redirectArchified", async (req, res) => {
   try {
     const result = await qrRedirectController.appDownloadRedirect(req);
 
