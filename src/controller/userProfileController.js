@@ -1,8 +1,6 @@
 const UserProfile = require("../modals/userProfile");
 const QRCode = require("qrcode");
 
-const UserProfile = require("../modals/userProfile");
-
 module.exports.saveUserProfile = async (req, res) => {
   const {
     userId,
