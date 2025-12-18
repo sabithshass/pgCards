@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userProfileController = require("../controller/userProfileController");
-const qrRedirectController =require("../controller/qrRedirectController")
+// const qrRedirectController =require("../controller/qrRedirectController")
 const reqHandling = require("../utils/reqHandling");
 
 router.post("/saveUserProfile", async (req, res) => {
@@ -116,7 +116,7 @@ router.post("/getUser", async (req, res) => {
 //   }
 // });
 
-router.get("/redirectArchified", qrRedirectController.appDownloadRedirect);
+// router.get("/redirectArchified", qrRedirectController.appDownloadRedirect);
 
 
 module.exports = router;
