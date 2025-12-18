@@ -1,10 +1,12 @@
 const UserProfile = require("../modals/userProfile");
 const QRCode = require("qrcode");
 
+const UserProfile = require("../modals/userProfile");
+
 module.exports.saveUserProfile = async (req, res) => {
   const {
-    fullName,
     userId,
+    fullName,
     companyDesignation,
     companyName,
     about,
@@ -15,48 +17,51 @@ module.exports.saveUserProfile = async (req, res) => {
     backgroundImage,
     profilePicture,
     coverLogo,
+    theme,
   } = req.body;
 
-  const profileData = {
-    user: userId,
-    fullName,
-    companyDesignation,
-    companyName,
-    about,
-    phoneNumbers,
-    emails,
-    contactDetails,
-    socialMedia,
-    backgroundImage,
-    profilePicture,
-    coverLogo,
-  };
-
-  let profile = await UserProfile.findOne({ user: userId });
-
-  if (profile) {
-    profile = await UserProfile.findOneAndUpdate(
-      { user: userId },
-      { $set: profileData },
-      { new: true }
-    );
-
+  if (!userId) {
     return {
-      data: true,
-      msg: "Profile updated successfully",
-      code: 200,
-      status: "SUCCESS",
-    };
-  } else {
-    profile = await UserProfile.create(profileData);
-    return {
-      data: true,
-      msg: "Profile created successfully",
-      code: 200,
-      status: "SUCCESS",
+      msg: "User ID is required",
+      code: 400,
     };
   }
+
+  await UserProfile.findOneAndUpdate(
+    { user: userId },
+    {
+      $set: {
+        fullName,
+        companyDesignation,
+        companyName,
+        about,
+        phoneNumbers,
+        emails,
+        contactDetails,
+        socialMedia,
+        backgroundImage,
+        profilePicture,
+        coverLogo,
+        theme,
+      },
+      $setOnInsert: {
+        user: userId,
+      },
+    },
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  return {
+    data: true,
+    msg: "Profile saved successfully",
+    code: 200,
+    status: "SUCCESS",
+  };
 };
+
 
 module.exports.getUserProfileById = async (req) => {
   const userId = req.params.id;
