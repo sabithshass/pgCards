@@ -70,6 +70,10 @@ const userProfileSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    theme: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
