@@ -52,6 +52,10 @@ module.exports.saveUserProfile = async (req, res) => {
     }
   );
 
+  console.log("userProfile",UserProfile);
+  console.log("theme",theme);
+  
+
   return {
     data: true,
     msg: "Profile saved successfully",
