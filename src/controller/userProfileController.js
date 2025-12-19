@@ -118,7 +118,7 @@ module.exports.generateUserQR = async (req, res) => {
     msg: "QR generated successfully",
     code:200,
     data:{qr: qrImage,
-    redirectUrl:redirectUrl}
+    redirectUrl:redirectUrl,theme: userProfile.theme,}
   };
 };
 
