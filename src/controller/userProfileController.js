@@ -116,49 +116,14 @@ module.exports.getUserProfileById = async (req) => {
   };
 };
 
-// module.exports.generateUserQR = async (req, res) => {
-//   const { userId } = req.body;
-
-//   const userProfile = await UserProfile.findOne({ user: userId });
-//   if (!userProfile) {
-//     return { msg: "User not found",code:404 };
-//   }
-
-//   if (userProfile.qrCode) {
-//     return {
-//       msg: "Existing QR returned",
-//       qr: userProfile.qrCode,
-//       redirectUrl: userProfile.redirectUrl,
-//     };
-//   }
-
-//   const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}`;
-
-//   const qrImage = await QRCode.toDataURL(redirectUrl);
-
-//   userProfile.qrCode = qrImage;
-//   userProfile.redirectUrl = redirectUrl;
-//   await userProfile.save();
-
-//   return {
-//     msg: "QR generated successfully",
-//     code:200,
-//     data:{qr: qrImage,
-//     redirectUrl:redirectUrl,theme: userProfile.theme,isPurchase: userProfile.isPurchase,}
-//   };
-// };
-
-
-
 module.exports.generateUserQR = async (req, res) => {
   const { userId } = req.body;
 
   const userProfile = await UserProfile.findOne({ user: userId });
   if (!userProfile) {
-    return { msg: "User not found", code: 404 };
+    return { msg: "User not found",code:404 };
   }
 
-  // If QR already exists
   if (userProfile.qrCode) {
     return {
       msg: "Existing QR returned",
@@ -167,9 +132,7 @@ module.exports.generateUserQR = async (req, res) => {
     };
   }
 
-  const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}?theme=${encodeURIComponent(
-    userProfile.theme
-  )}`;
+  const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}`;
 
   const qrImage = await QRCode.toDataURL(redirectUrl);
 
@@ -179,12 +142,49 @@ module.exports.generateUserQR = async (req, res) => {
 
   return {
     msg: "QR generated successfully",
-    code: 200,
-    data: {
-      qr: qrImage,
-      redirectUrl: redirectUrl,
-      theme: userProfile.theme,
-      isPurchase: userProfile.isPurchase,
-    },
+    code:200,
+    data:{qr: qrImage,
+    redirectUrl:redirectUrl,theme: userProfile.theme,isPurchase: userProfile.isPurchase,}
   };
 };
+
+
+
+// module.exports.generateUserQR = async (req, res) => {
+//   const { userId } = req.body;
+
+//   const userProfile = await UserProfile.findOne({ user: userId });
+//   if (!userProfile) {
+//     return { msg: "User not found", code: 404 };
+//   }
+
+//   // If QR already exists
+//   if (userProfile.qrCode) {
+//     return {
+//       msg: "Existing QR returned",
+//       qr: userProfile.qrCode,
+//       redirectUrl: userProfile.redirectUrl,
+//     };
+//   }
+
+//   const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}?theme=${encodeURIComponent(
+//     userProfile.theme
+//   )}`;
+
+//   const qrImage = await QRCode.toDataURL(redirectUrl);
+
+//   userProfile.qrCode = qrImage;
+//   userProfile.redirectUrl = redirectUrl;
+//   await userProfile.save();
+
+//   return {
+//     msg: "QR generated successfully",
+//     code: 200,
+//     data: {
+//       qr: qrImage,
+//       redirectUrl: redirectUrl,
+//       theme: userProfile.theme,
+//       isPurchase: userProfile.isPurchase,
+//     },
+//   };
+// };
