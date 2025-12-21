@@ -26,6 +26,9 @@ module.exports.saveUserProfile = async (req, res) => {
     };
   }
 
+
+  const existingProfile = await UserProfile.findOne({ user: userId });
+
     const trialEndsAt = existingProfile?.trialEndsAt
     ? existingProfile.trialEndsAt
     : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
