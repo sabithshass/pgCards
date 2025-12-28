@@ -210,8 +210,10 @@ module.exports.generateUserQR = async (req, res) => {
 // };
 
 module.exports.getAllUserProfiles = async (req) => {
-  const page = parseInt(req.body.page) || 1;
-  const limit = parseInt(req.body.limit) || 10;
+const source = req.body || req.query || {};
+
+const page = parseInt(source.page) || 1;
+const limit = parseInt(source.limit) || 10;
 
   const skip = (page - 1) * limit;
 
