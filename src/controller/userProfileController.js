@@ -188,23 +188,64 @@ module.exports.generateUserQR = async (req, res) => {
 //   };
 // };
 
+// module.exports.getAllUserProfiles = async (req) => {
+//   const profiles = await UserProfile.find()
+//     .populate("user")
+//     .sort({ createdAt: -1 });
+
+//   if (!profiles.length) {
+//     return {
+//       error: true,
+//       msg: "No user profiles found",
+//       code: 404,
+//     };
+//   }
+
+//   return {
+//     msg: "Users profile fetched successfully",
+//     code: 200,
+//     status: true,
+//     data: profiles,
+//   };
+// };
+
 module.exports.getAllUserProfiles = async (req) => {
-  const profiles = await UserProfile.find()
-    .populate("user")
-    .sort({ createdAt: -1 });
 
-  if (!profiles.length) {
+     const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    const [profiles, total] = await Promise.all([
+      UserProfile.find()
+        .populate("user")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+
+      UserProfile.countDocuments(),
+    ]);
+
+    if (!profiles.length) {
+      return {
+        error: true,
+        msg: "No user profiles found",
+        code: 404,
+      };
+    }
+
     return {
-      error: true,
-      msg: "No user profiles found",
-      code: 404,
+      msg: "Users profile fetched successfully",
+      code: 200,
+      status: true,
+      data: profiles,
+      pagination: {
+        totalRecords: total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        limit,
+      },
     };
-  }
 
-  return {
-    msg: "Users profile fetched successfully",
-    code: 200,
-    status: true,
-    data: profiles,
-  };
+  
 };
