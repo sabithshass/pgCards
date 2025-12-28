@@ -26,10 +26,9 @@ module.exports.saveUserProfile = async (req, res) => {
     };
   }
 
-
   const existingProfile = await UserProfile.findOne({ user: userId });
 
-    const trialEndsAt = existingProfile?.trialEndsAt
+  const trialEndsAt = existingProfile?.trialEndsAt
     ? existingProfile.trialEndsAt
     : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
@@ -51,7 +50,7 @@ module.exports.saveUserProfile = async (req, res) => {
         theme,
         isPurchase,
       },
-       $setOnInsert: {
+      $setOnInsert: {
         user: userId,
         trialEndsAt,
         isPurchase: false,
@@ -63,9 +62,8 @@ module.exports.saveUserProfile = async (req, res) => {
     }
   );
 
-  console.log("userProfile",UserProfile);
-  console.log("theme",theme);
-  
+  console.log("userProfile", UserProfile);
+  console.log("theme", theme);
 
   return {
     data: true,
@@ -74,7 +72,6 @@ module.exports.saveUserProfile = async (req, res) => {
     status: "SUCCESS",
   };
 };
-
 
 module.exports.getUserProfileById = async (req) => {
   const userId = req.params.id;
@@ -121,7 +118,7 @@ module.exports.generateUserQR = async (req, res) => {
 
   const userProfile = await UserProfile.findOne({ user: userId });
   if (!userProfile) {
-    return { msg: "User not found",code:404 };
+    return { msg: "User not found", code: 404 };
   }
 
   if (userProfile.qrCode) {
@@ -142,13 +139,15 @@ module.exports.generateUserQR = async (req, res) => {
 
   return {
     msg: "QR generated successfully",
-    code:200,
-    data:{qr: qrImage,
-    redirectUrl:redirectUrl,theme: userProfile.theme,isPurchase: userProfile.isPurchase,}
+    code: 200,
+    data: {
+      qr: qrImage,
+      redirectUrl: redirectUrl,
+      theme: userProfile.theme,
+      isPurchase: userProfile.isPurchase,
+    },
   };
 };
-
-
 
 // module.exports.generateUserQR = async (req, res) => {
 //   const { userId } = req.body;
@@ -188,3 +187,24 @@ module.exports.generateUserQR = async (req, res) => {
 //     },
 //   };
 // };
+
+module.exports.getAllUserProfiles = async (req) => {
+  const profiles = await UserProfile.find()
+    .populate("user")
+    .sort({ createdAt: -1 });
+
+  if (!profiles.length) {
+    return {
+      error: true,
+      msg: "No user profiles found",
+      code: 404,
+    };
+  }
+
+  return {
+    msg: "Users profile fetched successfully",
+    code: 200,
+    status: true,
+    data: profiles,
+  };
+};
