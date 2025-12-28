@@ -74,6 +74,14 @@ const userProfileSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    trialEndsAt: {
+      type: Date,
+    },
+
+    isPurchase: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

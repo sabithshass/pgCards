@@ -94,16 +94,16 @@ module.exports.getUserProfileById = async (req) => {
     };
   }
 
-  // const now = new Date();
-  // const trialValid = user.trialEndsAt && now <= user.trialEndsAt;
+  const now = new Date();
+  const trialValid = user.trialEndsAt && now <= user.trialEndsAt;
 
-  // if (!user.isPurchase && !trialValid) {
-  //   return {
-  //     data: false,
-  //     msg: "Trial expired. Please purchase to continue.",
-  //     code: 403,
-  //   };
-  // }
+  if (!user.isPurchase && !trialValid) {
+    return {
+      data: false,
+      msg: "Trial expired. Please purchase to continue.",
+      code: 403,
+    };
+  }
 
   return {
     msg: "User profile fetched successfully",
