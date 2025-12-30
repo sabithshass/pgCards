@@ -84,7 +84,7 @@ module.exports.getUserProfileById = async (req) => {
     };
   }
 
-  const user = await UserProfile.findById(userId);
+  const user = await UserProfile.findOne({user:userId});
 
   if (!user) {
     return {
