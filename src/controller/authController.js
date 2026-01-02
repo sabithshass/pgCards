@@ -182,7 +182,7 @@ module.exports.register = async (req) => {
   return {
     error: false,
     data: {
-      responseUser,
+      user:responseUser,
       token,
     },
     msg: "User registered successfully",
@@ -221,7 +221,7 @@ module.exports.login = async (req) => {
   return {
     error: false,
     data: {
-      responseUser,
+      data:responseUser,
       token,
     },
     msg: "Login successful",
