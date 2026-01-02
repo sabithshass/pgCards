@@ -109,6 +109,7 @@ module.exports.login = async (req) => {
       name: 1,
       email: 1,
       phone: 1,
+      role: 1,
       createdAt: 1,
     }
   );
