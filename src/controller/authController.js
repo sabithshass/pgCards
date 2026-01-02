@@ -1,218 +1,218 @@
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-// const User = require("../modals/userSchema");
-// const crypto = require('crypto');
-// const sendEmail = require('../utils/mailer');
-
-// const generateToken = (user) =>
-//   jwt.sign(
-//     { id: user._id, role: user.role },
-//     process.env.SECRET_JWT || "default_secret",
-//     { expiresIn: "7d" }
-//   );
-
-// module.exports.register = async (req) => {
-//   const { name, email, password, confirmPassword, phone, role, image } =
-//     req.body;
-
-//   if (!name || !email || !password || !confirmPassword || !phone) {
-//     return {
-//       error: true,
-//       msg: "All fields required",
-//       code: 400,
-//     };
-//   }
-
-//   if (password !== confirmPassword) {
-//     return {
-//       error: true,
-//       msg: "Passwords do not match",
-//       code: 400,
-//     };
-//   }
-
-//   const existingUser = await User.findOne({ email });
-//   if (existingUser) {
-//     return {
-//       error: true,
-//       msg: "email is already registered",
-//       code: 400,
-//     };
-//   }
-
-//   const hashedPassword = await bcrypt.hash(password, 10);
-//    await User.create({
-//     name,
-//     email,
-//     password: hashedPassword,
-//     phone,
-//     role: role || "user",
-//     image: image || null,
-//   });
-
-//   // const token = generateToken(user);
-//     const user = await User.findOne(
-//     { email },
-//     {
-//       _id: 1,
-//       name: 1,
-//       email: 1,
-//       phone: 1,
-//       createdAt: 1,
-//     }
-//   );
-//   const token = generateToken(user);
-//   return {
-//     error: false,
-//     data: { user, token },
-//     msg: "User registered successfully",
-//     code: 201,
-//     status: "SUCCESS",
-//   };
-// };
-
-
-// module.exports.login = async (req) => {
-//   const { email, password } = req.body;
-
-//   if (!email || !password) {
-//     return {
-//       error: true,
-//       msg: "Email and password are required",
-//       code: 400,
-//     };
-//   }
-
-//   const user = await User.findOne({ email });
-//   if (!user) {
-//     return {
-//       error: true,
-//       msg: "Invalid email or password",
-//       code: 401,
-//     };
-//   }
-
-//   const isMatch = await bcrypt.compare(password, user.password);
-//   if (!isMatch) {
-//     return {
-//       error: true,
-//       msg: "Invalid email or password",
-//       code: 401,
-//     };
-//   }
-
-//   const token = generateToken(user);
-
-//     const data = await User.findOne(
-//     { email },
-//     {
-//       _id: 1,
-//       name: 1,
-//       email: 1,
-//       phone: 1,
-//       role: 1,
-//       createdAt: 1,
-//     }
-//   );
-
-//   return {
-//     error: false,
-//     data: { data, token },
-//     msg: "Login successful",
-//     code: 200,
-//     status: "SUCCESS",
-//   };
-// };
-
-
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modals/userSchema");
-const { jwtSecret } = require("../../config/jwtConfig");
+const crypto = require('crypto');
+const sendEmail = require('../utils/mailer');
 
-// ================= TOKEN =================
-const generateToken = (user) => {
-  if (!user.role) {
-    throw new Error("Role missing while generating JWT");
-  }
-
-  return jwt.sign(
+const generateToken = (user) =>
+  jwt.sign(
     { id: user._id, role: user.role },
-    jwtSecret,
+    process.env.SECRET_JWT || "default_secret",
     { expiresIn: "7d" }
   );
-};
 
-// ================= REGISTER =================
 module.exports.register = async (req) => {
-  const { name, email, password, confirmPassword, phone, role } = req.body;
+  const { name, email, password, confirmPassword, phone, role, image } =
+    req.body;
 
   if (!name || !email || !password || !confirmPassword || !phone) {
-    return { error: true, msg: "All fields required", code: 400 };
+    return {
+      error: true,
+      msg: "All fields required",
+      code: 400,
+    };
   }
 
   if (password !== confirmPassword) {
-    return { error: true, msg: "Passwords do not match", code: 400 };
+    return {
+      error: true,
+      msg: "Passwords do not match",
+      code: 400,
+    };
   }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return { error: true, msg: "Email already registered", code: 400 };
+    return {
+      error: true,
+      msg: "email is already registered",
+      code: 400,
+    };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  // 🔥 create user (role INCLUDED)
-  const user = await User.create({
+   await User.create({
     name,
     email,
     password: hashedPassword,
     phone,
     role: role || "user",
+    image: image || null,
   });
 
-  // 🔐 token with role
+  // const token = generateToken(user);
+    const user = await User.findOne(
+    { email },
+    {
+      _id: 1,
+      name: 1,
+      email: 1,
+      phone: 1,
+      createdAt: 1,
+    }
+  );
   const token = generateToken(user);
-
   return {
     error: false,
-    data: {
-      token,
-    },
+    data: { user, token },
     msg: "User registered successfully",
     code: 201,
     status: "SUCCESS",
   };
 };
 
-// ================= LOGIN =================
+
 module.exports.login = async (req) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return { error: true, msg: "Email and password required", code: 400 };
+    return {
+      error: true,
+      msg: "Email and password are required",
+      code: 400,
+    };
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    return { error: true, msg: "Invalid email or password", code: 401 };
+    return {
+      error: true,
+      msg: "Invalid email or password",
+      code: 401,
+    };
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return { error: true, msg: "Invalid email or password", code: 401 };
+    return {
+      error: true,
+      msg: "Invalid email or password",
+      code: 401,
+    };
   }
 
   const token = generateToken(user);
 
+    const data = await User.findOne(
+    { email },
+    {
+      _id: 1,
+      name: 1,
+      email: 1,
+      phone: 1,
+      role: 1,
+      createdAt: 1,
+    }
+  );
+
   return {
     error: false,
-    data: { token },
+    data: { data, token },
     msg: "Login successful",
     code: 200,
     status: "SUCCESS",
   };
 };
+
+
+// const bcrypt = require("bcryptjs");
+// const jwt = require("jsonwebtoken");
+// const User = require("../modals/userSchema");
+// const { jwtSecret } = require("../../config/jwtConfig");
+
+// // ================= TOKEN =================
+// const generateToken = (user) => {
+//   if (!user.role) {
+//     throw new Error("Role missing while generating JWT");
+//   }
+
+//   return jwt.sign(
+//     { id: user._id, role: user.role },
+//     jwtSecret,
+//     { expiresIn: "7d" }
+//   );
+// };
+
+// // ================= REGISTER =================
+// module.exports.register = async (req) => {
+//   const { name, email, password, confirmPassword, phone, role } = req.body;
+
+//   if (!name || !email || !password || !confirmPassword || !phone) {
+//     return { error: true, msg: "All fields required", code: 400 };
+//   }
+
+//   if (password !== confirmPassword) {
+//     return { error: true, msg: "Passwords do not match", code: 400 };
+//   }
+
+//   const existingUser = await User.findOne({ email });
+//   if (existingUser) {
+//     return { error: true, msg: "Email already registered", code: 400 };
+//   }
+
+//   const hashedPassword = await bcrypt.hash(password, 10);
+
+//   // 🔥 create user (role INCLUDED)
+//   const user = await User.create({
+//     name,
+//     email,
+//     password: hashedPassword,
+//     phone,
+//     role: role || "user",
+//   });
+
+//   // 🔐 token with role
+//   const token = generateToken(user);
+
+//   return {
+//     error: false,
+//     data: {
+//       token,
+//     },
+//     msg: "User registered successfully",
+//     code: 201,
+//     status: "SUCCESS",
+//   };
+// };
+
+// // ================= LOGIN =================
+// module.exports.login = async (req) => {
+//   const { email, password } = req.body;
+
+//   if (!email || !password) {
+//     return { error: true, msg: "Email and password required", code: 400 };
+//   }
+
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     return { error: true, msg: "Invalid email or password", code: 401 };
+//   }
+
+//   const isMatch = await bcrypt.compare(password, user.password);
+//   if (!isMatch) {
+//     return { error: true, msg: "Invalid email or password", code: 401 };
+//   }
+
+//   const token = generateToken(user);
+
+//   return {
+//     error: false,
+//     data: { token },
+//     msg: "Login successful",
+//     code: 200,
+//     status: "SUCCESS",
+//   };
+// };
 
 module.exports.forgotPassword = async (req) => {
   const { email } = req.body;
