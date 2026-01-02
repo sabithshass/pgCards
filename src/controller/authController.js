@@ -11,37 +11,87 @@ const generateToken = (user) =>
     { expiresIn: "7d" }
   );
 
+// module.exports.register = async (req) => {
+//   const { name, email, password, confirmPassword, phone, role, image } =
+//     req.body;
+
+//   if (!name || !email || !password || !confirmPassword || !phone) {
+//     return {
+//       error: true,
+//       msg: "All fields required",
+//       code: 400,
+//     };
+//   }
+
+//   if (password !== confirmPassword) {
+//     return {
+//       error: true,
+//       msg: "Passwords do not match",
+//       code: 400,
+//     };
+//   }
+
+//   const existingUser = await User.findOne({ email });
+//   if (existingUser) {
+//     return {
+//       error: true,
+//       msg: "email is already registered",
+//       code: 400,
+//     };
+//   }
+
+//   const hashedPassword = await bcrypt.hash(password, 10);
+//    await User.create({
+//     name,
+//     email,
+//     password: hashedPassword,
+//     phone,
+//     role: role || "user",
+//     image: image || null,
+//   });
+
+//   // const token = generateToken(user);
+//     const user = await User.findOne(
+//     { email },
+//     {
+//       _id: 1,
+//       name: 1,
+//       email: 1,
+//       phone: 1,
+//       createdAt: 1,
+//     }
+//   );
+//   const token = generateToken(user);
+//   return {
+//     error: false,
+//     data: { user, token },
+//     msg: "User registered successfully",
+//     code: 201,
+//     status: "SUCCESS",
+//   };
+// };
+
 module.exports.register = async (req) => {
   const { name, email, password, confirmPassword, phone, role, image } =
     req.body;
 
   if (!name || !email || !password || !confirmPassword || !phone) {
-    return {
-      error: true,
-      msg: "All fields required",
-      code: 400,
-    };
+    return { error: true, msg: "All fields required", code: 400 };
   }
 
   if (password !== confirmPassword) {
-    return {
-      error: true,
-      msg: "Passwords do not match",
-      code: 400,
-    };
+    return { error: true, msg: "Passwords do not match", code: 400 };
   }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return {
-      error: true,
-      msg: "email is already registered",
-      code: 400,
-    };
+    return { error: true, msg: "Email already registered", code: 400 };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-   await User.create({
+
+  // 🔥 CREATE USER (role included)
+  const user = await User.create({
     name,
     email,
     password: hashedPassword,
@@ -50,81 +100,115 @@ module.exports.register = async (req) => {
     image: image || null,
   });
 
-  // const token = generateToken(user);
-    const user = await User.findOne(
-    { email },
-    {
-      _id: 1,
-      name: 1,
-      email: 1,
-      phone: 1,
-      role: role || "user",
-      createdAt: 1,
-    }
-  );
+  // 🔐 CREATE TOKEN FROM CREATED USER
   const token = generateToken(user);
+
+  // optional clean response
+  const responseUser = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    createdAt: user.createdAt,
+  };
+
   return {
     error: false,
-    data: { user, token },
+    data: { user: responseUser, token },
     msg: "User registered successfully",
     code: 201,
     status: "SUCCESS",
   };
 };
 
+// module.exports.login = async (req) => {
+//   const { email, password } = req.body;
+
+//   if (!email || !password) {
+//     return {
+//       error: true,
+//       msg: "Email and password are required",
+//       code: 400,
+//     };
+//   }
+
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     return {
+//       error: true,
+//       msg: "Invalid email or password",
+//       code: 401,
+//     };
+//   }
+
+//   const isMatch = await bcrypt.compare(password, user.password);
+//   if (!isMatch) {
+//     return {
+//       error: true,
+//       msg: "Invalid email or password",
+//       code: 401,
+//     };
+//   }
+
+//   const token = generateToken(user);
+
+//     const data = await User.findOne(
+//     { email },
+//     {
+//       _id: 1,
+//       name: 1,
+//       email: 1,
+//       phone: 1,
+//       role: 1,
+//       createdAt: 1,
+//     }
+//   );
+
+//   return {
+//     error: false,
+//     data: { data, token },
+//     msg: "Login successful",
+//     code: 200,
+//     status: "SUCCESS",
+//   };
+// };
+
 module.exports.login = async (req) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return {
-      error: true,
-      msg: "Email and password are required",
-      code: 400,
-    };
+    return { error: true, msg: "Email and password required", code: 400 };
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    return {
-      error: true,
-      msg: "Invalid email or password",
-      code: 401,
-    };
+    return { error: true, msg: "Invalid email or password", code: 401 };
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return {
-      error: true,
-      msg: "Invalid email or password",
-      code: 401,
-    };
+    return { error: true, msg: "Invalid email or password", code: 401 };
   }
 
+  // 🔐 TOKEN INCLUDES ROLE
   const token = generateToken(user);
 
-    const data = await User.findOne(
-    { email },
-    {
-      _id: 1,
-      name: 1,
-      email: 1,
-      phone: 1,
-      role: 1,
-      createdAt: 1,
-    }
-  );
+  const responseUser = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    createdAt: user.createdAt,
+  };
 
   return {
     error: false,
-    data: { data, token },
+    data: { user: responseUser, token },
     msg: "Login successful",
     code: 200,
     status: "SUCCESS",
   };
 };
-
-
 module.exports.forgotPassword = async (req) => {
   const { email } = req.body;
   if (!email) {
