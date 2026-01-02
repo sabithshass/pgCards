@@ -58,6 +58,7 @@ module.exports.register = async (req) => {
       name: 1,
       email: 1,
       phone: 1,
+      role: role || "user",
       createdAt: 1,
     }
   );
