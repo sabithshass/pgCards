@@ -129,6 +129,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../modals/userSchema");
 const { jwtSecret } = require("../../config/jwtConfig");
+const crypto = require('crypto');
+const sendEmail = require('../utils/mailer');
+
 
 // ================= TOKEN =================
 const generateToken = (user) => {
