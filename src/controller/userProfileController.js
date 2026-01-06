@@ -250,3 +250,55 @@ const limit = parseInt(source.limit) || 10;
     },
   };
 };
+
+
+module.exports.saveQrImage = async (req, res) => {
+    const { userId, qrImage } = req.body;
+
+    if (!userId) {
+      return{
+        msg: "User ID is required",
+        status: "FAILED",
+        code:400
+      };
+    }
+
+    if (!qrImage) {
+      return{
+        msg: "QR image is required",
+        status: "FAILED",
+        code:400
+      };
+    }
+
+    const updatedProfile = await UserProfile.findOneAndUpdate(
+      { user: userId },
+      {
+        $set: {
+          qrImage,
+        },
+      },
+      {
+        new: true,
+        upsert: false,
+      }
+    );
+
+    if (!updatedProfile) {
+      return res.status(404).json({
+        msg: "User profile not found",
+        status: "FAILED",
+      });
+    }
+
+    return{
+      data: {
+        qrImage: updatedProfile.qrImage,
+      },
+      msg: "QR image saved successfully",
+      status: "SUCCESS",
+      code:200
+    };
+
+};
+
