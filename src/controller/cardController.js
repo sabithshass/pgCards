@@ -83,3 +83,31 @@ module.exports.getProducts = async (req, res) => {
       status: "SUCCESS",
     };
 };
+
+module.exports.deleteProduct = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return {
+      msg: "Product id is required",
+      code: 400,
+      error: true,
+    };
+  }
+
+  const deletedProduct = await CardProduct.findByIdAndDelete(id);
+
+  if (!deletedProduct) {
+    return {
+      msg: "Product not found",
+      code: 404,
+    };
+  }
+
+  return {
+    data: deletedProduct,
+    msg: "Product deleted successfully",
+    code: 200,
+    status: "SUCCESS",
+  };
+};
