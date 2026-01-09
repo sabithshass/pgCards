@@ -17,6 +17,7 @@ module.exports.saveUserProfile = async (req, res) => {
     coverLogo,
     theme,
     isPurchase,
+    carouselImages,
   } = req.body;
 
   if (!userId) {
@@ -49,6 +50,7 @@ module.exports.saveUserProfile = async (req, res) => {
         coverLogo,
         theme,
         isPurchase,
+        carouselImages,
       },
       $setOnInsert: {
         user: userId,
@@ -62,8 +64,8 @@ module.exports.saveUserProfile = async (req, res) => {
     }
   );
 
-  console.log("userProfile", UserProfile);
-  console.log("theme", theme);
+  // console.log("userProfile", UserProfile);
+  // console.log("theme", theme);
 
   return {
     data: true,

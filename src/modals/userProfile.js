@@ -82,6 +82,12 @@ const userProfileSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    serviceImages: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
   },
   {
     timestamps: true,
