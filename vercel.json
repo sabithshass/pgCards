@@ -15,7 +15,7 @@
   "crons": [
     {
       "path": "/api/cron/delete-expired-trials",
-      "schedule": "10 0 * * *"
+      "schedule": "30 0 * * *"
     }
   ]
 }
