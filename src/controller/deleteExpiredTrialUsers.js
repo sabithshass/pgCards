@@ -27,27 +27,56 @@
 // module.exports = deleteExpiredTrialUsers;
 
 
-const UserProfile = require("../modals/userProfile");
+// const UserProfile = require("../modals/userProfile");
+
+// exports.deleteExpiredTrialUsers = async (req, res) => {
+//   try {
+//     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+//       return res.status(401).json({ message: "Unauthorized" });
+//     }
+
+//     const now = new Date();
+
+//     const result = await UserProfile.deleteMany({
+//       isPurchase: { $ne: true },
+//       trialEndsAt: { $lt: now }
+//     });
+
+//     return res.status(200).json({
+//       success: true,
+//       deletedCount: result.deletedCount
+//     });
+//   } catch (error) {
+//     console.error("[CRON ERROR]", error);
+//     return res.status(500).json({ message: "Cron job failed" });
+//   }
+// };
+
+
+// src/controller/deleteExpiredTrialUsers.js
+const UserProfile = require('../modals/userProfile');
 
 exports.deleteExpiredTrialUsers = async (req, res) => {
   try {
-    if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (req.headers['x-vercel-cron'] !== 'true') {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     const now = new Date();
-
     const result = await UserProfile.deleteMany({
       isPurchase: { $ne: true },
       trialEndsAt: { $lt: now }
     });
 
+    console.log(`[CRON] Deleted ${result.deletedCount} expired trial users at ${now}`);
+
     return res.status(200).json({
       success: true,
       deletedCount: result.deletedCount
     });
-  } catch (error) {
-    console.error("[CRON ERROR]", error);
+  } catch (err) {
+    console.error("[CRON ERROR]", err);
     return res.status(500).json({ message: "Cron job failed" });
   }
 };
+
