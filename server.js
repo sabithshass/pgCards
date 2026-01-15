@@ -13,6 +13,7 @@ const cardRoutes = require("./src/routes/cardRoutes");
 const userProfileRoutes = require("./src/routes/userProfileRoutes");
 const cartRoutes =require("./src/routes/cartRoutes")
 const paymentRoutes=require("./src/routes/paymentRoutes")
+const { deleteExpiredTrialUsers } = require("./src/controller/deleteExpiredTrialUsers")
 
 const app = express();
 
@@ -36,9 +37,12 @@ app.use("/userProfile",userProfileRoutes)
 app.use("/cart",cartRoutes)
 app.use("/payment",paymentRoutes)
 
+app.get("/api/cron/delete-expired-trials", deleteExpiredTrialUsers);
+
 app.get('/', (req, res) => {
   res.send('Server is running!');
 });
+
 
 
 const PORT = process.env.PORT || 3002;
