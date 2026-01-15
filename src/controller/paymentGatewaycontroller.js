@@ -55,9 +55,6 @@ module.exports.createPaymentIntent = async (req) => {
   };
 };
 
-
-
-
 module.exports.confirmPayment = async (req) => {
   const { paymentIntentId, orderId } = req.body;
 
@@ -65,23 +62,39 @@ module.exports.confirmPayment = async (req) => {
     return { code: 400, msg: "params missing" };
   }
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    if (paymentIntent.status === "succeeded") {
-      await Order.findByIdAndUpdate(orderId, {
-        paymentStatus: "paid",
-        paymentIntentId: paymentIntent.id,
+  const order = await Order.findById(orderId);
+  if (!order) {
+    return { code: 404, msg: "Order not found" };
+  }
+
+  if (paymentIntent.status === "succeeded") {
+    await Order.findByIdAndUpdate(orderId, {
+      paymentStatus: "paid",
+      paymentIntentId: paymentIntent.id,
+      updatedAt: new Date(),
+    });
+
+    await UserProfile.findOneAndUpdate(
+      { user: order.user },
+      {
+        isPurchase: true,
+        trialEndsAt: null, 
         updatedAt: new Date(),
-      });
+      }
+    );
 
-      return { code: 200, msg: "Payment confirmed successfully" };
-    } else {
-      await Order.findByIdAndUpdate(orderId, {
-        paymentStatus: "failed",
-        updatedAt: new Date(),
-      });
+    return { code: 200, msg: "Payment confirmed successfully" };
+  } else {
+    await Order.findByIdAndUpdate(orderId, {
+      paymentStatus: "failed",
+      updatedAt: new Date(),
+    });
 
-      return { code: 400, msg: `Payment not successful, status: ${paymentIntent.status}` };
-    }
- 
+    return {
+      code: 400,
+      msg: `Payment not successful, status: ${paymentIntent.status}`,
+    };
+  }
 };
