@@ -27,7 +27,7 @@
 // module.exports = deleteExpiredTrialUsers;
 
 
-const UserProfile = require("../models/UserProfile");
+const UserProfile = require("../modals/userProfile");
 
 exports.deleteExpiredTrialUsers = async (req, res) => {
   try {
