@@ -12,6 +12,7 @@ const generateToken = (user) =>
   );
 
 module.exports.googleSignIn = async (req) => {
+  console.log("process.env.GOOGLE_CLIENT_ID",process.env.GOOGLE_CLIENT_ID);
   const { token } = req.body;
 
   const ticket = await client.verifyIdToken({
