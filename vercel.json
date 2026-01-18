@@ -4,25 +4,12 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "api/cron/delete-expired-trials.js",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/cron/delete-expired-trials",
-      "dest": "/api/cron/delete-expired-trials.js"
-    },
-    {
       "src": "/(.*)",
       "dest": "/server.js"
     }
-  ],
-  "functions": {
-    "api/cron/delete-expired-trials.js": {
-      "schedule": "40 0 * * *" 
-    }
-  }
+  ]
 }
