@@ -52,6 +52,16 @@ const cardProductSchema = new mongoose.Schema(
           required: true,
           trim: true,
         },
+        leftSideView: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        rightSideView: {
+          type: String,
+          required: true,
+          trim: true,
+        },
         price: {
           type: Number,
           required: true,
