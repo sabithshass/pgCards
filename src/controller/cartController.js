@@ -108,25 +108,23 @@ module.exports.updateQuantity = async (req) => {
 
 
 module.exports.removeItem = async (req) => {
-    const { userId, productId } = req.body;
+  const { userId, productId } = req.body;
 
-    const cart = await Cart.findOne({ userId });
-    if (!cart) {
-      return { error: true, msg: "Cart not found", code: 404 };
-    }
+  if (!userId || !productId) {
+    return { error: true, msg: "userId & productId required", code: 400 };
+  }
 
-    cart.items = cart.items.filter(
-      (i) => i.productId.toString() !== productId
-    );
+  const updatedCart = await Cart.findOneAndUpdate(
+    { userId: new ObjectId(userId) },
+    { $pull: { items: { productId: new ObjectId(productId) } } },
+    { new: true }
+  );
 
-    await cart.save();
+  if (!updatedCart) {
+    return { error: true, msg: "Cart not found", code: 404 };
+  }
 
-    return {
-      error: false,
-      msg: "Item removed",
-      data: cart,
-      code: 200
-    };
+  return {  msg: "Item deleted", data: updatedCart, code: 200 };
 };
 
 
