@@ -116,7 +116,7 @@ module.exports.removeItem = async (req) => {
 
   const updatedCart = await Cart.findOneAndUpdate(
     { userId: new ObjectId(userId) },
-    { $pull: { items: { productId: new ObjectId(productId) } } },
+    { $pull: { items: { productId: productId} } },
     { new: true }
   );
 
