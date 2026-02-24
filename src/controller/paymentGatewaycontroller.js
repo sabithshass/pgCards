@@ -1,13 +1,19 @@
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const Order = require("../modals/order");
+console.log("Using Stripe Key:", process.env.STRIPE_SECRET_KEY.slice(-4));
+
 
 module.exports.createPaymentIntent = async (req) => {
+  console.log("Using Stripe Key:", process.env.STRIPE_SECRET_KEY.slice(-4));
+
   const { userId, productId, variantId, amount } = req.body;
+console.log("imimim");
 
   if (!userId || !productId || !variantId || !amount) {
     return { code: 400, msg: "params missing" };
   }
+console.log("lllllllllllll");
 
   const paymentCurrency = "aed";
 
@@ -19,7 +25,7 @@ module.exports.createPaymentIntent = async (req) => {
     currency: paymentCurrency,
     paymentStatus: "pending",
   });
-
+console.log("hfgfhgvgfcgf");
   // const paymentIntent = await stripe.paymentIntents.create({
   //   amount: amount,
   //   currency: paymentCurrency,
@@ -29,7 +35,7 @@ module.exports.createPaymentIntent = async (req) => {
   //     userId: String(userId),
   //   },
   // });
-
+console.log("rfcvgbhngvf");
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount,
     currency: "aed",
@@ -39,10 +45,12 @@ module.exports.createPaymentIntent = async (req) => {
       userId: userId.toString(),
     },
   });
+console.log("paymentIntent",paymentIntent);
 
   await Order.findByIdAndUpdate(order._id, {
     paymentIntentId: paymentIntent.id,
   });
+console.log("kkkkkkkkkkkkkkk");
 
   return {
     code: 200,
