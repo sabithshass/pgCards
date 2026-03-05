@@ -18,6 +18,7 @@ module.exports.saveUserProfile = async (req, res) => {
     theme,
     isPurchase,
     carouselImages,
+    qrImage,
   } = req.body;
 
   if (!userId) {
