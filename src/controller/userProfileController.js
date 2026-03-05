@@ -304,3 +304,72 @@ module.exports.saveQrImage = async (req, res) => {
 
 };
 
+module.exports.deleteUserProfileById = async (req) => {
+   const { userId} = req.body;
+
+  if (!userId) {
+    return {
+      data: false,
+      msg: "User ID is required",
+      code: 400,
+    };
+  }
+
+  const deletedUser = await UserProfile.findOneAndDelete({ user: userId });
+
+  if (!deletedUser) {
+    return {
+      data: false,
+      msg: "User profile not found",
+      code: 404,
+    };
+  }
+
+  return {
+    msg: "User profile deleted successfully",
+    code: 200,
+    status: true,
+    data: deletedUser,
+  };
+};
+
+module.exports.updateUserProfile = async (req) => {
+  const { userId, fullName, email, companyName, companyDesignation, theme } = req.body;
+
+  if (!userId) {
+    return {
+      data: false,
+      msg: "User ID is required",
+      code: 400,
+    };
+  }
+
+  const updatedUser = await UserProfile.findOneAndUpdate(
+    { user: userId },
+    {
+      $set: {
+        fullName,
+        email,
+        companyName,
+        companyDesignation,
+        theme,
+      },
+    },
+    { new: true }
+  );
+
+  if (!updatedUser) {
+    return {
+      data: false,
+      msg: "User profile not found",
+      code: 404,
+    };
+  }
+
+  return {
+    msg: "User profile updated successfully",
+    status: true,
+    code: 200,
+    data: updatedUser,
+  };
+};

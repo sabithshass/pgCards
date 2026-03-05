@@ -172,6 +172,62 @@ router.post("/saveQrImage", async (req, res) => {
   }
 });
 
+router.post("/deleteUserProfile", async (req, res) => {
+  try {
+    const result = await userProfileController.deleteUserProfileById(req);
+
+    if (result.error) {
+      return reqHandling.handleError({
+        res,
+        reason: result.msg,
+        code: result.code,
+      });
+    }
+
+    return reqHandling.handleResponse({
+      res,
+      data: result.data,
+      msg: result.msg,
+      code: result.code,
+      status: result.status,
+    });
+  } catch (err) {
+    return reqHandling.handleError({
+      res,
+      reason: err.message || "Server error",
+      code: 500,
+    });
+  }
+});
+
+router.post("/updateUserProfile", async (req, res) => {
+  try {
+    const result = await userProfileController.updateUserProfile(req);
+
+    if (result.error) {
+      return reqHandling.handleError({
+        res,
+        reason: result.msg,
+        code: result.code,
+      });
+    }
+
+    return reqHandling.handleResponse({
+      res,
+      data: result.data,
+      msg: result.msg,
+      code: result.code,
+      status: result.status,
+    });
+  } catch (err) {
+    return reqHandling.handleError({
+      res,
+      reason: err.message || "Server error",
+      code: 500,
+    });
+  }
+});
+
 // router.get("/redirectArchified", async (req, res) => {
 //   try {
 //     const result = await qrRedirectController.appDownloadRedirect(req);
