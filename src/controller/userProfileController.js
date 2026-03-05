@@ -51,6 +51,7 @@ module.exports.saveUserProfile = async (req, res) => {
         theme,
         isPurchase,
         carouselImages,
+        qrImage,
       },
       $setOnInsert: {
         user: userId,
