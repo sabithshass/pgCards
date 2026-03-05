@@ -1,9 +1,85 @@
 const UserProfile = require("../modals/userProfile");
 const QRCode = require("qrcode");
 
+// module.exports.saveUserProfile = async (req, res) => {
+//   const {
+//     userId,
+//     fullName,
+//     companyDesignation,
+//     companyName,
+//     about,
+//     phoneNumbers,
+//     emails,
+//     contactDetails,
+//     socialMedia,
+//     backgroundImage,
+//     profilePicture,
+//     coverLogo,
+//     theme,
+//     isPurchase,
+//     carouselImages,
+//     qrImage,
+//     profileId
+//   } = req.body;
+
+//   if (!userId) {
+//     return {
+//       msg: "User ID is required",
+//       code: 400,
+//     };
+//   }
+
+//   const existingProfile = await UserProfile.findOne({ user: userId });
+
+//   const trialEndsAt = existingProfile?.trialEndsAt
+//     ? existingProfile.trialEndsAt
+//     : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+
+//   await UserProfile.findOneAndUpdate(
+//     { user: userId },
+//     {
+//       $set: {
+//         fullName,
+//         companyDesignation,
+//         companyName,
+//         about,
+//         phoneNumbers,
+//         emails,
+//         contactDetails,
+//         socialMedia,
+//         backgroundImage,
+//         profilePicture,
+//         coverLogo,
+//         theme,
+//         isPurchase,
+//         carouselImages,
+//         qrImage,
+//       },
+//       $setOnInsert: {
+//         user: userId,
+//         trialEndsAt,
+//         isPurchase: false,
+//       },
+//     },
+//     {
+//       upsert: true,
+//       new: true,
+//     }
+//   );
+
+//   return {
+//     data: true,
+//     msg: "Profile saved successfully",
+//     code: 200,
+//     status: "SUCCESS",
+//   };
+// };
+
+
 module.exports.saveUserProfile = async (req, res) => {
   const {
     userId,
+    profileId,
     fullName,
     companyDesignation,
     companyName,
@@ -18,7 +94,7 @@ module.exports.saveUserProfile = async (req, res) => {
     theme,
     isPurchase,
     carouselImages,
-    qrImage,
+    qrImage
   } = req.body;
 
   if (!userId) {
@@ -28,50 +104,61 @@ module.exports.saveUserProfile = async (req, res) => {
     };
   }
 
-  const existingProfile = await UserProfile.findOne({ user: userId });
+  let profile;
 
-  const trialEndsAt = existingProfile?.trialEndsAt
-    ? existingProfile.trialEndsAt
-    : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
-
-  await UserProfile.findOneAndUpdate(
-    { user: userId },
-    {
-      $set: {
-        fullName,
-        companyDesignation,
-        companyName,
-        about,
-        phoneNumbers,
-        emails,
-        contactDetails,
-        socialMedia,
-        backgroundImage,
-        profilePicture,
-        coverLogo,
-        theme,
-        isPurchase,
-        carouselImages,
-        qrImage,
+  if (profileId) {
+    profile = await UserProfile.findOneAndUpdate(
+      { _id: profileId, user: userId },
+      {
+        $set: {
+          fullName,
+          companyDesignation,
+          companyName,
+          about,
+          phoneNumbers,
+          emails,
+          contactDetails,
+          socialMedia,
+          backgroundImage,
+          profilePicture,
+          coverLogo,
+          theme,
+          isPurchase,
+          carouselImages,
+          qrImage,
+        },
       },
-      $setOnInsert: {
-        user: userId,
-        trialEndsAt,
-        isPurchase: false,
-      },
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
+      { new: true }
+    );
+  } else {
+    const trialEndsAt = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
 
-  // console.log("userProfile", UserProfile);
-  // console.log("theme", theme);
+    profile = await UserProfile.create({
+      user: userId,
+      fullName,
+      companyDesignation,
+      companyName,
+      about,
+      phoneNumbers,
+      emails,
+      contactDetails,
+      socialMedia,
+      backgroundImage,
+      profilePicture,
+      coverLogo,
+      theme,
+      isPurchase: false,
+      carouselImages,
+      qrImage,
+      trialEndsAt,
+    });
+  }
 
   return {
-    data: true,
-    msg: "Profile saved successfully",
+    data: profile._id,
+    msg: profileId
+      ? "Profile updated successfully"
+      : "Profile created successfully",
     code: 200,
     status: "SUCCESS",
   };
@@ -153,65 +240,6 @@ module.exports.generateUserQR = async (req, res) => {
   };
 };
 
-// module.exports.generateUserQR = async (req, res) => {
-//   const { userId } = req.body;
-
-//   const userProfile = await UserProfile.findOne({ user: userId });
-//   if (!userProfile) {
-//     return { msg: "User not found", code: 404 };
-//   }
-
-//   // If QR already exists
-//   if (userProfile.qrCode) {
-//     return {
-//       msg: "Existing QR returned",
-//       qr: userProfile.qrCode,
-//       redirectUrl: userProfile.redirectUrl,
-//     };
-//   }
-
-//   const redirectUrl = `https://pg-cards-seven.vercel.app/user_profile/${userProfile._id}?theme=${encodeURIComponent(
-//     userProfile.theme
-//   )}`;
-
-//   const qrImage = await QRCode.toDataURL(redirectUrl);
-
-//   userProfile.qrCode = qrImage;
-//   userProfile.redirectUrl = redirectUrl;
-//   await userProfile.save();
-
-//   return {
-//     msg: "QR generated successfully",
-//     code: 200,
-//     data: {
-//       qr: qrImage,
-//       redirectUrl: redirectUrl,
-//       theme: userProfile.theme,
-//       isPurchase: userProfile.isPurchase,
-//     },
-//   };
-// };
-
-// module.exports.getAllUserProfiles = async (req) => {
-//   const profiles = await UserProfile.find()
-//     .populate("user")
-//     .sort({ createdAt: -1 });
-
-//   if (!profiles.length) {
-//     return {
-//       error: true,
-//       msg: "No user profiles found",
-//       code: 404,
-//     };
-//   }
-
-//   return {
-//     msg: "Users profile fetched successfully",
-//     code: 200,
-//     status: true,
-//     data: profiles,
-//   };
-// };
 
 module.exports.getAllUserProfiles = async (req) => {
 const source = req.body || req.query || {};
