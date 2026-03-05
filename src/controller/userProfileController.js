@@ -165,8 +165,8 @@ module.exports.saveUserProfile = async (req, res) => {
 };
 
 module.exports.getUserProfileById = async (req) => {
-  const userId = req.params.id;
-  // const profileId=req.params.id
+  // const userId = req.params.id;
+  const profileId=req.params.id
 
   if (!profileId) {
     return {
@@ -176,8 +176,8 @@ module.exports.getUserProfileById = async (req) => {
     };
   }
 
-  const user = await UserProfile.findOne({user:userId});
-  // const user = await UserProfile.findOne({_id:profileId});
+  // const user = await UserProfile.findOne({user:userId});
+  const user = await UserProfile.findOne({_id:profileId});
 
   if (!user) {
     return {
