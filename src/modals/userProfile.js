@@ -88,6 +88,10 @@ const userProfileSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    qrImage: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
