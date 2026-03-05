@@ -166,16 +166,18 @@ module.exports.saveUserProfile = async (req, res) => {
 
 module.exports.getUserProfileById = async (req) => {
   const userId = req.params.id;
+  // const profileId=req.params.id
 
-  if (!userId) {
+  if (!profileId) {
     return {
       data: false,
-      msg: "User ID is required",
+      msg: "profileId is required",
       code: 400,
     };
   }
 
   const user = await UserProfile.findOne({user:userId});
+  // const user = await UserProfile.findOne({_id:profileId});
 
   if (!user) {
     return {
@@ -205,9 +207,11 @@ module.exports.getUserProfileById = async (req) => {
 };
 
 module.exports.generateUserQR = async (req, res) => {
-  const { userId } = req.body;
+  // const { userId } = req.body;
+  const { profileId } = req.body;
 
-  const userProfile = await UserProfile.findOne({ user: userId });
+  // const userProfile = await UserProfile.findOne({ user: userId });
+   const userProfile = await UserProfile.findOne({ _id: profileId });
   if (!userProfile) {
     return { msg: "User not found", code: 404 };
   }
