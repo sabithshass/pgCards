@@ -111,3 +111,39 @@ module.exports.deleteProduct = async (req, res) => {
     status: "SUCCESS",
   };
 };
+
+
+module.exports.stockUpdate = async (req, res) => {
+    const { id, stockIn } = req.body;
+
+    if (!id || typeof stockIn !== "boolean") {
+      return {
+        msg: "params missing",
+        code: 400,
+        error: true,
+      };
+    }
+    const product = await CardProduct.findById(id);
+
+    if (!product) {
+      return {
+        msg: "Product not found",
+        code: 404,
+      };
+    }
+
+    const stockUpdate = await CardProduct.findByIdAndUpdate(
+      id,
+      { StockIn: stockIn },
+      { new: true }
+    );
+
+    return {
+      data: stockUpdate,
+      msg: "Stock updated successfully",
+      code: 200,
+      status: "SUCCESS",
+    };
+
+
+};

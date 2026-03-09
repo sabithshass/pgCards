@@ -133,7 +133,7 @@ const crypto = require('crypto');
 const sendEmail = require('../utils/mailer');
 
 
-// ================= TOKEN =================
+
 const generateToken = (user) => {
   if (!user.role) {
     throw new Error("Role missing while generating JWT");

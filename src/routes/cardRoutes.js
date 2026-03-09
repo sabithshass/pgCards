@@ -117,5 +117,33 @@ router.post("/deleteProduct", async (req, res) => {
 });
 
 
+router.post("/stockUpdate", async (req, res) => {
+  try {
+    const result = await cardController.stockUpdate(req);
+
+    if (result.error) {
+      return reqHandling.handleError({
+        res,
+        reason: result.msg,
+        code: result.code,
+      });
+    }
+
+    return reqHandling.handleResponse({
+      res,
+      data: result.data,
+      msg: result.msg,
+      code: result.code,
+      status: result.status,
+    });
+  } catch (err) {
+    return reqHandling.handleError({
+      res,
+      reason: err.message || "Server error",
+      code: 500,
+    });
+  }
+});
+
 
 module.exports = router;

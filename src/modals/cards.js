@@ -44,22 +44,26 @@ const cardProductSchema = new mongoose.Schema(
         },
         frontImage: {
           type: String,
-          required: true,
           trim: true,
         },
         backImage: {
           type: String,
-          required: true,
           trim: true,
         },
         leftSideView: {
           type: String,
-          required: true,
+          trim: true,
+        },
+        leftInView: {
+          type: String,
+          trim: true,
+        },
+        rightInView: {
+          type: String,
           trim: true,
         },
         rightSideView: {
           type: String,
-          required: true,
           trim: true,
         },
         price: {
@@ -72,11 +76,15 @@ const cardProductSchema = new mongoose.Schema(
         },
       },
     ],
+    StockIn: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 module.exports = mongoose.model("CardProduct", cardProductSchema);
