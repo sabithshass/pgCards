@@ -92,11 +92,17 @@ const userProfileSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    carouselImages: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
   },
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 module.exports = mongoose.model("UserProfile", userProfileSchema);
